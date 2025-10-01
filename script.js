@@ -90,15 +90,14 @@ function listImages() {
   if (!accessToken) return;
 
   const q = encodeURIComponent(`'${FOLDER_ID}' in parents and mimeType contains 'image/'`);
-  fetch(
-    `https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`,
-    { headers: { "Authorization": "Bearer " + accessToken } }
-  )
+  fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+    headers: { "Authorization": "Bearer " + accessToken }
+  })
   .then(res => res.json())
   .then(data => {
     galleryDiv.innerHTML = "";
     if (!data.files || !data.files.length) {
-      galleryDiv.innerHTML = "<p>No images found in Drive folder.</p>";
+      galleryDiv.innerHTML = "<p>Nu s-au găsit imagini în folderul Drive.</p>";
       return;
     }
 
@@ -109,6 +108,7 @@ function listImages() {
       const img = document.createElement("img");
       img.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&access_token=${accessToken}`;
       img.alt = file.name;
+      img.style.maxWidth = "200px"; // optional styling
 
       const caption = document.createElement("p");
       caption.innerText = file.name;
@@ -120,6 +120,7 @@ function listImages() {
   })
   .catch(err => updateStatus("List error: " + (err.message || JSON.stringify(err))));
 }
+
 
 // ====== INIT ======
 window.addEventListener("load", () => {
