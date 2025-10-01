@@ -21,7 +21,6 @@ function updateStatus(msg) {
 
 // ====== AUTHENTICATION ======
 function handleAuthClick() {
-  // triggers Google login popup
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
@@ -47,6 +46,7 @@ function uploadFiles() {
     form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     form.append("file", file);
 
+    // Step 1: Upload file
     fetch(
       "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType",
       {
@@ -57,8 +57,29 @@ function uploadFiles() {
     )
     .then(res => res.json())
     .then(data => {
-      updateStatus(`File "${data.name}" uploaded!`);
-      listImages();
+      if (!data.id) {
+        updateStatus("Upload failed: " + JSON.stringify(data));
+        return;
+      }
+
+      // Step 2: Make the file public
+      return fetch(
+        `https://www.googleapis.com/drive/v3/files/${data.id}/permissions`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + accessToken,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            role: "reader",
+            type: "anyone"
+          })
+        }
+      ).then(() => {
+        updateStatus(`File "${data.name}" uploaded and shared!`);
+        listImages();
+      });
     })
     .catch(err => updateStatus("Upload error: " + (err.message || JSON.stringify(err))));
   });
@@ -102,7 +123,6 @@ function listImages() {
 
 // ====== INIT ======
 window.addEventListener("load", () => {
-  // 1) Initialize token client
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope:     SCOPES,
@@ -117,7 +137,6 @@ window.addEventListener("load", () => {
     }
   });
 
-  // 2) Attach events
   loginBtn.onclick  = handleAuthClick;
   uploadBtn.onclick = uploadFiles;
 });
