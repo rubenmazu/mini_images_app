@@ -1,16 +1,16 @@
-// ====== CONFIGURAȚIE ======
+// ====== CONFIGURATION ======
 const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr";
 const SCOPES      = "https://www.googleapis.com/auth/drive.file";
 const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1";
 
-// ====== ELEMENTE UI ======
+// ====== UI ELEMENTS ======
 const loginBtn   = document.getElementById("loginBtn");
 const uploadBtn  = document.getElementById("uploadBtn");
 const fileInput  = document.getElementById("fileInput");
 const statusDiv  = document.getElementById("status");
 const galleryDiv = document.getElementById("gallery");
 
-// ====== VARIABILE GLOBALE ======
+// ====== GLOBAL VARIABLES ======
 let tokenClient;
 let accessToken = null;
 
@@ -19,21 +19,21 @@ function updateStatus(msg) {
   statusDiv.innerText = msg;
 }
 
-// ====== AUTENTIFICARE ======
+// ====== AUTHENTICATION ======
 function handleAuthClick() {
-  // va declanșa popup-ul Google
+  // triggers Google login popup
   tokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
-// ====== UPLOAD ======
+// ====== UPLOAD FILES ======
 function uploadFiles() {
   if (!accessToken) {
-    return alert("Trebuie să te autentifici mai întâi.");
+    return alert("You must log in first.");
   }
 
   const files = fileInput.files;
   if (!files.length) {
-    return alert("Selectează cel puțin un fișier.");
+    return alert("Select at least one file.");
   }
 
   Array.from(files).forEach(file => {
@@ -57,14 +57,14 @@ function uploadFiles() {
     )
     .then(res => res.json())
     .then(data => {
-      updateStatus(`Fișierul "${data.name}" a fost încărcat!`);
+      updateStatus(`File "${data.name}" uploaded!`);
       listImages();
     })
-    .catch(err => updateStatus("Eroare la upload: " + (err.message || JSON.stringify(err))));
+    .catch(err => updateStatus("Upload error: " + (err.message || JSON.stringify(err))));
   });
 }
 
-// ====== LISTARE GALERIE ======
+// ====== LIST GALLERY ======
 function listImages() {
   if (!accessToken) return;
 
@@ -76,19 +76,33 @@ function listImages() {
   .then(res => res.json())
   .then(data => {
     galleryDiv.innerHTML = "";
+    if (!data.files || !data.files.length) {
+      galleryDiv.innerHTML = "<p>No images found in Drive folder.</p>";
+      return;
+    }
+
     data.files.forEach(file => {
+      const card = document.createElement("div");
+      card.className = "image-card";
+
       const img = document.createElement("img");
       img.src = `https://drive.google.com/uc?export=view&id=${file.id}`;
       img.alt = file.name;
-      galleryDiv.appendChild(img);
+
+      const caption = document.createElement("p");
+      caption.innerText = file.name;
+
+      card.appendChild(img);
+      card.appendChild(caption);
+      galleryDiv.appendChild(card);
     });
   })
-  .catch(err => updateStatus("Eroare la listare: " + (err.message || JSON.stringify(err))));
+  .catch(err => updateStatus("List error: " + (err.message || JSON.stringify(err))));
 }
 
-// ====== INITIALIZĂRI ======
+// ====== INIT ======
 window.addEventListener("load", () => {
-  // 1) Setez client-ul GIS de token
+  // 1) Initialize token client
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope:     SCOPES,
@@ -98,12 +112,12 @@ window.addEventListener("load", () => {
         return;
       }
       accessToken = resp.access_token;
-      updateStatus("Te-ai logat cu Google Drive!");
+      updateStatus("Logged in with Google Drive!");
       listImages();
     }
   });
 
-  // 2) Atașez evenimente
+  // 2) Attach events
   loginBtn.onclick  = handleAuthClick;
   uploadBtn.onclick = uploadFiles;
 });
