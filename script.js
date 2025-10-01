@@ -107,7 +107,7 @@ function listImages() {
       card.className = "image-card";
 
       const img = document.createElement("img");
-      img.src = `https://drive.google.com/uc?export=view&id=${file.id}`;
+      img.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&access_token=${accessToken}`;
       img.alt = file.name;
 
       const caption = document.createElement("p");
