@@ -7,7 +7,7 @@
   <title>Mini Cloud Poze</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Content Security Policy -->
+  <!-- Content Security Policy (cu fix la style-src) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://apis.google.com https://accounts.google.com/gsi/client https://www.gstatic.com;
@@ -25,8 +25,8 @@
 <body>
   <h1>Mini Cloud Poze</h1>
 
-  <button id="loginBtn">Login cu Google</button><br><br>
-  <input type="file" id="fileInput" multiple><br><br>
+  <button id="loginBtn">Login cu Google</button><br>
+  <input type="file" id="fileInput" multiple><br>
   <button id="uploadBtn">Încarcă în Drive</button>
 
   <div id="status"></div>
@@ -34,7 +34,7 @@
   <h2>Galerie</h2>
   <div id="gallery"></div>
 
-  <!-- tot JS-ul extern -->
+  <!-- JS extern -->
   <script src="script.js" defer></script>
 </body>
 </html>
