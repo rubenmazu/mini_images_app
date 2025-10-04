@@ -1,7 +1,7 @@
 // ===== CONFIGURATION =====
-const CLIENT_ID   = "YOUR_CLIENT_ID.apps.googleusercontent.com"; 
+const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr.apps.googleusercontent.com"; 
 const SCOPES      = "https://www.googleapis.com/auth/drive.file";
-const FOLDER_ID   = "YOUR_FOLDER_ID"; 
+const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1"; 
 
 const loginBtn   = document.getElementById("loginBtn");
 const uploadBtn  = document.getElementById("uploadBtn");
