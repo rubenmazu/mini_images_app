@@ -1,9 +1,6 @@
 // ====== CONFIGURATION ======
-// !!! Trebuie completat corect din Google Cloud Console:
-// CLIENT_ID are mereu forma: xxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com
 const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr.apps.googleusercontent.com"; 
 const SCOPES      = "https://www.googleapis.com/auth/drive.file";
-// !!! Pune aici ID-ul folderului tău din Google Drive:
 const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1"; 
 
 // ====== UI ELEMENTS ======
@@ -49,7 +46,6 @@ function uploadFiles() {
     form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
     form.append("file", file);
 
-    // Step 1: Upload file
     fetch(
       "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name",
       {
@@ -65,7 +61,7 @@ function uploadFiles() {
         return;
       }
 
-      // Step 2: Make the file public
+      // Make file public
       return fetch(
         `https://www.googleapis.com/drive/v3/files/${data.id}/permissions`,
         {
@@ -80,7 +76,7 @@ function uploadFiles() {
           })
         }
       ).then(() => {
-        updateStatus(`Fișierul "${data.name}" a fost încărcat și partajat public!`);
+        updateStatus(`Fișierul "${data.name}" a fost încărcat și partajat!`);
         listImages();
       });
     })
@@ -88,7 +84,7 @@ function uploadFiles() {
   });
 }
 
-// ====== LIST GALLERY ======
+// ====== LIST GALLERY (fetch + blob pentru imagini) ======
 function listImages() {
   if (!accessToken) return;
 
@@ -97,22 +93,34 @@ function listImages() {
     headers: { "Authorization": "Bearer " + accessToken }
   })
   .then(res => res.json())
-  .then(data => {
+  .then(async data => {
     galleryDiv.innerHTML = "";
     if (!data.files || !data.files.length) {
       galleryDiv.innerHTML = "<p>Nu s-au găsit imagini în folderul Drive.</p>";
       return;
     }
 
-    data.files.forEach(file => {
+    for (const file of data.files) {
       const card = document.createElement("div");
       card.className = "image-card";
 
       const img = document.createElement("img");
-      // Folosim link public direct
-      img.src = `https://drive.google.com/uc?export=view&id=${file.id}`;
       img.alt = file.name;
       img.style.maxWidth = "200px";
+
+      // Fetch image content cu token
+      try {
+        const resp = await fetch(
+          `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,
+          { headers: { "Authorization": "Bearer " + accessToken } }
+        );
+        if (!resp.ok) throw new Error(`Nu s-a putut descărca fișierul ${file.name}`);
+        const blob = await resp.blob();
+        img.src = URL.createObjectURL(blob);
+      } catch (err) {
+        img.alt = "Eroare la încărcarea imaginii";
+        console.error(err);
+      }
 
       const caption = document.createElement("p");
       caption.innerText = file.name;
@@ -120,7 +128,7 @@ function listImages() {
       card.appendChild(img);
       card.appendChild(caption);
       galleryDiv.appendChild(card);
-    });
+    }
   })
   .catch(err => updateStatus("Eroare la listare: " + (err.message || JSON.stringify(err))));
 }
