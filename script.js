@@ -1,7 +1,10 @@
 // ====== CONFIGURATION ======
-const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr";
+// !!! Trebuie completat corect din Google Cloud Console:
+// CLIENT_ID are mereu forma: xxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com
+const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr.apps.googleusercontent.com"; 
 const SCOPES      = "https://www.googleapis.com/auth/drive.file";
-const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1";
+// !!! Pune aici ID-ul folderului tău din Google Drive:
+const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1"; 
 
 // ====== UI ELEMENTS ======
 const loginBtn   = document.getElementById("loginBtn");
@@ -48,7 +51,7 @@ function uploadFiles() {
 
     // Step 1: Upload file
     fetch(
-      "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType",
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name",
       {
         method:  "POST",
         headers: { "Authorization": "Bearer " + accessToken },
@@ -90,7 +93,7 @@ function listImages() {
   if (!accessToken) return;
 
   const q = encodeURIComponent(`'${FOLDER_ID}' in parents and mimeType contains 'image/'`);
-  fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+  fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,webContentLink)`, {
     headers: { "Authorization": "Bearer " + accessToken }
   })
   .then(res => res.json())
@@ -106,9 +109,10 @@ function listImages() {
       card.className = "image-card";
 
       const img = document.createElement("img");
-      img.src = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&access_token=${accessToken}`;
+      // Folosim link public (nu depinde de token care expiră)
+      img.src = file.webContentLink;
       img.alt = file.name;
-      img.style.maxWidth = "200px"; // optional styling
+      img.style.maxWidth = "200px";
 
       const caption = document.createElement("p");
       caption.innerText = file.name;
@@ -120,7 +124,6 @@ function listImages() {
   })
   .catch(err => updateStatus("List error: " + (err.message || JSON.stringify(err))));
 }
-
 
 // ====== INIT ======
 window.addEventListener("load", () => {

@@ -7,19 +7,18 @@
   <title>Mini Cloud Poze</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Content Security Policy (cu fix la style-src) -->
+  <!-- Content Security Policy (fixuri adăugate) -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' https://apis.google.com https://accounts.google.com/gsi/client https://www.gstatic.com;
+    script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
     style-src 'self' 'unsafe-inline';
     img-src 'self' https://drive.google.com https://lh3.googleusercontent.com data:;
     connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
-    frame-src https://accounts.google.com https://content.googleapis.com;
+    frame-src https://accounts.google.com;
   ">
   <meta http-equiv="Permissions-Policy" content="unload=()">
 
-  <!-- Google API + GIS -->
-  <script src="https://apis.google.com/js/api.js" async defer></script>
+  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
