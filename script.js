@@ -100,9 +100,9 @@ async function listImages() {
 
       const img = document.createElement("img");
       img.alt = file.name;
-      img.style.maxWidth = "150px";
-      img.style.borderRadius = "12px";
-      img.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+      img.style.maxWidth = "120px"; // mai mic
+      img.style.borderRadius = "10px";
+      img.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
       img.style.transition = "transform 0.2s ease";
 
       try {
