@@ -1,6 +1,7 @@
-const CLIENT_ID   = "115891282859-5dnqs72l6r4pcfk5tphjm46n17t880kr.apps.googleusercontent.com"; 
+// ===== CONFIGURATION =====
+const CLIENT_ID   = "YOUR_CLIENT_ID.apps.googleusercontent.com"; 
 const SCOPES      = "https://www.googleapis.com/auth/drive.file";
-const FOLDER_ID   = "1N7lsQ-mJH5qrfa-J7uMcKwKbCpA_udp1"; 
+const FOLDER_ID   = "YOUR_FOLDER_ID"; 
 
 const loginBtn   = document.getElementById("loginBtn");
 const uploadBtn  = document.getElementById("uploadBtn");
@@ -10,45 +11,45 @@ const galleryDiv = document.getElementById("gallery");
 
 let tokenClient;
 let accessToken = null;
-let imagesList = []; // lista imaginilor pentru slider
+let imagesList = [];
 
-function updateStatus(msg) {
-  statusDiv.innerText = msg;
-}
+// ===== HELPERS =====
+function updateStatus(msg) { statusDiv.innerText = msg; }
 
-function handleAuthClick() {
-  tokenClient.requestAccessToken({ prompt: 'consent' });
-}
+// ===== AUTH =====
+function handleAuthClick() { tokenClient.requestAccessToken({ prompt: 'consent' }); }
 
+// ===== UPLOAD =====
 function uploadFiles() {
-  if (!accessToken) return alert("Trebuie să te autentifici mai întâi.");
+  if (!accessToken) return alert("You must log in first.");
   const files = fileInput.files;
-  if (!files.length) return alert("Selectează cel puțin un fișier.");
+  if (!files.length) return alert("Select at least one file.");
 
   Array.from(files).forEach(file => {
-    const metadata = { name: file.name, mimeType: file.type, parents: [FOLDER_ID] };
+    const metadata = { name:file.name, mimeType:file.type, parents:[FOLDER_ID] };
     const form = new FormData();
-    form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+    form.append("metadata", new Blob([JSON.stringify(metadata)], {type:"application/json"}));
     form.append("file", file);
 
-    fetch(
-      "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name",
-      { method: "POST", headers: { "Authorization": "Bearer " + accessToken }, body: form }
-    )
+    fetch(`https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name`, {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + accessToken },
+      body: form
+    })
     .then(res => res.json())
     .then(data => {
-      if (!data.id) { updateStatus("Upload eșuat: " + JSON.stringify(data)); return; }
-      // make public
-      fetch(`https://www.googleapis.com/drive/v3/files/${data.id}/permissions`, {
+      if (!data.id) { updateStatus("Upload failed: "+JSON.stringify(data)); return; }
+      return fetch(`https://www.googleapis.com/drive/v3/files/${data.id}/permissions`, {
         method: "POST",
-        headers: { "Authorization": "Bearer " + accessToken, "Content-Type": "application/json" },
-        body: JSON.stringify({ role: "reader", type: "anyone" })
-      }).then(() => { updateStatus(`Fișierul "${data.name}" încărcat și partajat!`); listImages(); });
+        headers: { "Authorization":"Bearer "+accessToken, "Content-Type":"application/json" },
+        body: JSON.stringify({ role:"reader", type:"anyone" })
+      }).then(()=>{ updateStatus(`File "${data.name}" uploaded!`); listImages(); });
     })
-    .catch(err => updateStatus("Eroare la upload: " + (err.message || JSON.stringify(err))));
+    .catch(err=>updateStatus("Upload error: "+(err.message||JSON.stringify(err))));
   });
 }
 
+// ===== LIST IMAGES =====
 async function listImages() {
   if (!accessToken) return;
 
@@ -61,10 +62,7 @@ async function listImages() {
   galleryDiv.innerHTML = "";
   imagesList = [];
 
-  if (!data.files || !data.files.length) {
-    galleryDiv.innerHTML = "<p>Nu s-au găsit imagini în folderul Drive.</p>";
-    return;
-  }
+  if (!data.files || !data.files.length) { galleryDiv.innerHTML = "<p>No images found.</p>"; return; }
 
   const modal = document.getElementById("modal");
   const modalImg = document.getElementById("modalImg");
@@ -72,62 +70,60 @@ async function listImages() {
   const modalPrev = document.getElementById("modalPrev");
   const modalNext = document.getElementById("modalNext");
 
-  for (const file of data.files) {
+  let currentIndex = 0;
+
+  for(const file of data.files){
     const card = document.createElement("div");
     card.className = "image-card";
-
     const img = document.createElement("img");
     img.alt = file.name;
-    img.loading = "lazy"; // lazy load
+    img.loading = "lazy";
 
     try {
       const resp = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,
-        { headers: { "Authorization": "Bearer " + accessToken } });
+        { headers:{ "Authorization":"Bearer "+accessToken } });
       const blob = await resp.blob();
       img.src = URL.createObjectURL(blob);
       imagesList.push(img.src);
-    } catch(err) { img.alt="Eroare"; console.error(err); }
+    } catch(err){ img.alt="Error"; console.error(err); }
 
-    img.style.cursor = "pointer";
-    img.onclick = () => {
-      modal.style.display = "block";
+    img.style.cursor="pointer";
+    img.onclick = ()=>{
+      modal.style.display="block";
       currentIndex = imagesList.indexOf(img.src);
       modalImg.src = imagesList[currentIndex];
     }
 
     card.appendChild(img);
     galleryDiv.appendChild(card);
+
+    setTimeout(()=>{ card.style.opacity=1; }, 100);
   }
 
-  // Modal navigation
-  let currentIndex = 0;
-  modalClose.onclick = () => { modal.style.display = "none"; }
-  modalPrev.onclick = () => { currentIndex = (currentIndex-1+imagesList.length)%imagesList.length; modalImg.src=imagesList[currentIndex]; }
-  modalNext.onclick = () => { currentIndex = (currentIndex+1)%imagesList.length; modalImg.src=imagesList[currentIndex]; }
-  modal.onclick = (e) => { if(e.target===modal) modal.style.display="none"; }
+  modalClose.onclick = ()=>{ modal.style.display="none"; }
+  modalPrev.onclick = ()=>{ currentIndex=(currentIndex-1+imagesList.length)%imagesList.length; modalImg.src=imagesList[currentIndex]; }
+  modalNext.onclick = ()=>{ currentIndex=(currentIndex+1)%imagesList.length; modalImg.src=imagesList[currentIndex]; }
+  modal.onclick = e=>{ if(e.target===modal) modal.style.display="none"; }
 }
 
-// INIT
-window.addEventListener("load", () => {
+// ===== INIT =====
+window.addEventListener("load",()=>{
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPES,
-    callback: resp => {
-      if (resp.error) { updateStatus("Eroare autentificare: "+resp.error); return; }
+    callback: resp=>{
+      if(resp.error){ updateStatus("Auth error: "+resp.error); return; }
       accessToken = resp.access_token;
-      updateStatus("Autentificat cu Google Drive!");
+      updateStatus("Logged in with Google Drive!");
+      loginBtn.style.display="none";
       listImages();
     }
   });
 
-  loginBtn.onclick = handleAuthClick;
-  uploadBtn.onclick = uploadFiles;
+  loginBtn.onclick=handleAuthClick;
+  uploadBtn.onclick=uploadFiles;
 
-  // Drag & Drop Upload
-  galleryDiv.ondragover = (e) => e.preventDefault();
-  galleryDiv.ondrop = (e) => {
-    e.preventDefault();
-    fileInput.files = e.dataTransfer.files;
-    uploadFiles();
-  };
+  // Drag & Drop
+  galleryDiv.ondragover = e=>e.preventDefault();
+  galleryDiv.ondrop = e=>{ e.preventDefault(); fileInput.files=e.dataTransfer.files; uploadFiles(); };
 });

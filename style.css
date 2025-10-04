@@ -1,30 +1,36 @@
 /* ===== BODY & TYPO ===== */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #e0f7fa; /* baby blue very light */
-  color: #024d6d; /* dark blue accent */
+  font-family: 'Poppins', sans-serif;
+  background: #e0f7fa; /* baby blue */
+  color: #024d6d;
   margin: 0;
   padding: 0 20px 40px;
+  position: relative;
+  overflow-x: hidden;
 }
 
-h1 {
+header {
   text-align: center;
-  font-size: 2.5em;
-  margin-top: 20px;
-  color: #01579b; /* deeper baby blue */
-}
-
-.subtitle {
-  text-align: center;
-  color: #0277bd;
-  font-size: 1.2em;
   margin-bottom: 30px;
 }
 
-h2 {
-  text-align: center;
-  margin-top: 40px;
+h1 {
+  font-family: 'Sacramento', cursive;
+  font-size: 3em;
   color: #01579b;
+}
+
+.quote {
+  font-size: 1.2em;
+  color: #0288d1;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.subtitle {
+  font-size: 1em;
+  color: #0277bd;
+  margin-top: 5px;
 }
 
 /* ===== UPLOAD SECTION ===== */
@@ -41,37 +47,44 @@ button {
   background: linear-gradient(135deg, #81d4fa, #4fc3f7);
   color: white;
   font-weight: bold;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   transition: transform 0.2s, box-shadow 0.3s;
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-/* ===== GALLERY GRID ===== */
+/* ===== GALLERY MASONRY ===== */
 #gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
+  column-count: 3;
+  column-gap: 15px;
   padding: 0 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .image-card {
-  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 15px;
   border-radius: 12px;
+  overflow: hidden;
+  background: #b3e5fc;
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  background: #b3e5fc; /* light baby blue card */
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s, opacity 0.8s;
+  opacity: 0; /* fade-in */
+  position: relative;
 }
 
 .image-card img {
   width: 100%;
+  height: auto;
   display: block;
-  transition: transform 0.3s, filter 0.3s;
   border-radius: 12px;
+  transition: transform 0.3s, filter 0.3s;
 }
 
 .image-card:hover img {
@@ -79,19 +92,30 @@ button:hover {
   filter: brightness(1.1);
 }
 
-.image-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+/* ===== HEART ICON ON HOVER ===== */
+.image-card::after {
+  content: "❤️";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5em;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.image-card:hover::after {
+  opacity: 1;
+  transform: scale(1.2);
 }
 
 /* ===== MODAL ===== */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 1002;
   left: 0; top: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0, 77, 110, 0.9); /* dark baby blue overlay */
+  background-color: rgba(0, 77, 110, 0.9);
   transition: opacity 0.3s ease;
 }
 
@@ -106,9 +130,7 @@ button:hover {
   transition: transform 0.3s;
 }
 
-.modal-content:hover {
-  transform: scale(1.02);
-}
+.modal-content:hover { transform: scale(1.02); }
 
 .modal-close {
   position: absolute;
@@ -121,9 +143,7 @@ button:hover {
   transition: color 0.3s;
 }
 
-.modal-close:hover {
-  color: #ffffff;
-}
+.modal-close:hover { color: #ffffff; }
 
 .modal-nav {
   position: absolute;
@@ -139,9 +159,24 @@ button:hover {
   transition: background 0.3s;
 }
 
-.modal-nav:hover {
-  background: rgba(3,169,244,0.6);
-}
+.modal-nav:hover { background: rgba(3,169,244,0.6); }
 
 #modalPrev { left: 20px; }
 #modalNext { right: 20px; }
+
+/* ===== PARTICLE EFFECT ===== */
+body::before {
+  content: '';
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) { #gallery { column-count: 2; } h1 { font-size: 2.5em; } .quote { font-size: 1em; } }
+@media (max-width: 480px) { #gallery { column-count: 1; } h1 { font-size: 2em; } .quote { font-size: 0.9em; } button { padding: 12px 18px; font-size: 0.9em; } }

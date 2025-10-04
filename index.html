@@ -1,38 +1,42 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mini Cloud Poze - Baby Blue Theme</title>
+  <title>Ruben & Marta - Baby Blue Gallery</title>
+
+  <!-- Google Fonts: Poppins for body, Sacramento for title -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 
-  <!-- Content Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
-    style-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     img-src 'self' blob: https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
     connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
     frame-src https://accounts.google.com;
   ">
-
+  
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <header>
-    <h1>Mini Cloud Poze</h1>
-    <p class="subtitle">Galerie elegantă Baby Blue</p>
+    <h1>Ruben & Marta's Gallery 💙</h1>
+    <p class="quote">“Love is not about how many days, months, or years you have been together. It's about how much you love each other every single day.” – Unknown ❤️</p>
+    <p class="subtitle">Upload your favorite memories and see them shine!</p>
   </header>
 
   <section id="upload-section">
-    <button id="loginBtn">Login cu Google</button>
+    <button id="loginBtn">Login with Google</button>
     <input type="file" id="fileInput" multiple>
-    <button id="uploadBtn">Încarcă în Drive</button>
+    <button id="uploadBtn">Upload to Drive</button>
     <div id="status"></div>
   </section>
 
   <section>
-    <h2>Galerie</h2>
+    <h2>Our Memories</h2>
     <div id="gallery"></div>
   </section>
 
