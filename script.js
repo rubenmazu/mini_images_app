@@ -30,12 +30,12 @@ function handleAuthClick() {
 // ====== UPLOAD FILES ======
 function uploadFiles() {
   if (!accessToken) {
-    return alert("You must log in first.");
+    return alert("Trebuie să te autentifici mai întâi.");
   }
 
   const files = fileInput.files;
   if (!files.length) {
-    return alert("Select at least one file.");
+    return alert("Selectează cel puțin un fișier.");
   }
 
   Array.from(files).forEach(file => {
@@ -61,7 +61,7 @@ function uploadFiles() {
     .then(res => res.json())
     .then(data => {
       if (!data.id) {
-        updateStatus("Upload failed: " + JSON.stringify(data));
+        updateStatus("Upload eșuat: " + JSON.stringify(data));
         return;
       }
 
@@ -80,11 +80,11 @@ function uploadFiles() {
           })
         }
       ).then(() => {
-        updateStatus(`File "${data.name}" uploaded and shared!`);
+        updateStatus(`Fișierul "${data.name}" a fost încărcat și partajat public!`);
         listImages();
       });
     })
-    .catch(err => updateStatus("Upload error: " + (err.message || JSON.stringify(err))));
+    .catch(err => updateStatus("Eroare la upload: " + (err.message || JSON.stringify(err))));
   });
 }
 
@@ -93,7 +93,7 @@ function listImages() {
   if (!accessToken) return;
 
   const q = encodeURIComponent(`'${FOLDER_ID}' in parents and mimeType contains 'image/'`);
-  fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,webContentLink)`, {
+  fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
     headers: { "Authorization": "Bearer " + accessToken }
   })
   .then(res => res.json())
@@ -109,8 +109,8 @@ function listImages() {
       card.className = "image-card";
 
       const img = document.createElement("img");
-      // Folosim link public (nu depinde de token care expiră)
-      img.src = file.webContentLink;
+      // Folosim link public direct
+      img.src = `https://drive.google.com/uc?export=view&id=${file.id}`;
       img.alt = file.name;
       img.style.maxWidth = "200px";
 
@@ -122,7 +122,7 @@ function listImages() {
       galleryDiv.appendChild(card);
     });
   })
-  .catch(err => updateStatus("List error: " + (err.message || JSON.stringify(err))));
+  .catch(err => updateStatus("Eroare la listare: " + (err.message || JSON.stringify(err))));
 }
 
 // ====== INIT ======
@@ -132,11 +132,11 @@ window.addEventListener("load", () => {
     scope:     SCOPES,
     callback:  (resp) => {
       if (resp.error) {
-        updateStatus("Auth error: " + resp.error);
+        updateStatus("Eroare autentificare: " + resp.error);
         return;
       }
       accessToken = resp.access_token;
-      updateStatus("Logged in with Google Drive!");
+      updateStatus("Autentificat cu Google Drive!");
       listImages();
     }
   });
