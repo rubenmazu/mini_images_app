@@ -6,12 +6,12 @@
   <title>Mini Cloud Poze</title>
   <link rel="stylesheet" href="style.css">
 
-  <!-- Content Security Policy -->
+  <!-- Content Security Policy: adăugat blob: pentru imagini -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
+    img-src 'self' blob: https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
     connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
     frame-src https://accounts.google.com;
   ">
@@ -32,7 +32,6 @@
   <h2>Galerie</h2>
   <div id="gallery"></div>
 
-  <!-- JS extern -->
   <script src="script.js" defer></script>
 </body>
 </html>

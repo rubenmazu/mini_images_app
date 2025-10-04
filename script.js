@@ -84,7 +84,7 @@ function uploadFiles() {
   });
 }
 
-// ====== LIST GALLERY (fetch + blob pentru imagini) ======
+// ====== LIST GALLERY (fetch + blob) ======
 function listImages() {
   if (!accessToken) return;
 
