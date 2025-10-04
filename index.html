@@ -1,56 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ruben & Marta - Baby Blue Gallery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruben & Marta – Our Gallery</title>
 
-  <!-- Google Fonts: Poppins for body, Sacramento for title -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
-
+  <!-- Security Policy -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' blob: https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
-    connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
+    img-src 'self' https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
+    connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com;
     frame-src https://accounts.google.com;
   ">
-  
+
+  <link rel="stylesheet" href="style.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
+
   <header>
-    <h1>Ruben & Marta's Gallery 💙</h1>
-     <blockquote style="font-style: italic; margin: 2em; padding: 1em; border-left: 4px solid #ccc; background-color: #f9f9f9;">
-        Love begins with the desire for external beauty and evolves into the desire to understand inner beauty.
-        <footer style="margin-top: 0.5em; font-weight: bold;">&mdash; Inspired by Plato, in <cite>The Symposium</cite></footer>
-      </blockquote>
+    <h1>Ruben & Marta 💙</h1>
+    <p class="quote">"Love is not about how many days, months, or years you’ve been together. It’s all about how much you love each other every single day."<br><span>– Unknown</span></p>
+    <button id="loginBtn">Login with Google Drive</button>
+    <p id="status"></p>
   </header>
 
-  <section id="upload-section">
-    <button id="loginBtn">Login with Google</button>
-    <input type="file" id="fileInput" multiple>
-    <button id="uploadBtn">Upload to Drive</button>
-    <div id="status"></div>
-  </section>
+  <main>
+    <div id="gallery" class="gallery"></div>
+  </main>
 
-  <section>
-    <h2>Our Memories</h2>
-    <div id="gallery"></div>
-  </section>
-
-  <!-- Modal -->
+  <!-- Modal for large images -->
   <div id="modal" class="modal">
     <span id="modalClose" class="modal-close">&times;</span>
     <img id="modalImg" class="modal-content">
-    <div id="modalPrev" class="modal-nav">&#10094;</div>
-    <div id="modalNext" class="modal-nav">&#10095;</div>
   </div>
 
-  <script src="script.js" defer></script>
 </body>
 </html>
