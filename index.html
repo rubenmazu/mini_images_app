@@ -14,6 +14,7 @@
     default-src 'self';
     script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
     img-src 'self' blob: https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
     connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
     frame-src https://accounts.google.com;
@@ -24,8 +25,10 @@
 <body>
   <header>
     <h1>Ruben & Marta's Gallery 💙</h1>
-    <p class="quote">“Love is not about how many days, months, or years you have been together. It's about how much you love each other every single day.” – Unknown ❤️</p>
-    <p class="subtitle">Upload your favorite memories and see them shine!</p>
+     <blockquote style="font-style: italic; margin: 2em; padding: 1em; border-left: 4px solid #ccc; background-color: #f9f9f9;">
+        Love begins with the desire for external beauty and evolves into the desire to understand inner beauty.
+        <footer style="margin-top: 0.5em; font-weight: bold;">&mdash; Inspired by Plato, in <cite>The Symposium</cite></footer>
+      </blockquote>
   </header>
 
   <section id="upload-section">
