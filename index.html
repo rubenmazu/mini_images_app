@@ -1,41 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ruben & Marta - Baby Blue Gallery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ruben & Marta - Gallery</title>
 
-  <!-- Google Fonts: Poppins for body, Sacramento for title -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Sacramento&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- Content Security Policy: adjust if needed -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' https://accounts.google.com/gsi/client https://www.gstatic.com;
+    script-src 'self' https://accounts.google.com/gsi/client https://apis.google.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' blob: https://drive.google.com https://lh3.googleusercontent.com https://www.googleapis.com data:;
-    connect-src 'self' https://www.googleapis.com https://accounts.google.com https://content.googleapis.com http://127.0.0.1:5500;
+    img-src 'self' data: blob: https://lh3.googleusercontent.com https://drive.google.com https://www.googleapis.com;
+    connect-src 'self' https://www.googleapis.com https://accounts.google.com;
     frame-src https://accounts.google.com;
   ">
-  
+
+  <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <header>
-    <h1>Ruben & Marta's Gallery 💙</h1>
-     <blockquote style="font-style: italic; margin: 2em; padding: 1em; border-left: 4px solid #ccc; background-color: #f9f9f9;">
-        Love begins with the desire for external beauty and evolves into the desire to understand inner beauty.
-        <footer style="margin-top: 0.5em; font-weight: bold;">&mdash; Inspired by Plato, in <cite>The Symposium</cite></footer>
-      </blockquote>
-  </header>
+  <div class="title-wrapper">
+    <div class="circle left">
+      <img src="images/ruben.jpg" alt="Ruben">
+    </div>
+
+    <h1>Reuben & Martha</h1>
+
+    <div class="circle right">
+      <img src="images/marta-mica-1.jpg" alt="Marta">
+    </div>
+  </div>
+
+  <blockquote style="font-style: italic; margin: 2em; padding: 1em; border-left: 5px solid #ccc; background-color: #f9f9f9;">
+    Love begins with the desire for external beauty and evolves into the desire to understand inner beauty.
+    <footer style="margin-top: 0.5em; font-weight: bold;">&mdash; Inspired by Plato, in <cite>The Symposium</cite></footer>
+  </blockquote>
+</header>
+
 
   <section id="upload-section">
+    <!-- This button will be rendered/enhanced by our JS to request an access token -->
     <button id="loginBtn">Login with Google</button>
-    <input type="file" id="fileInput" multiple>
-    <button id="uploadBtn">Upload to Drive</button>
-    <div id="status"></div>
+
+    <!-- After login, the upload UI will be visible -->
+    <div id="afterLogin" style="display:none; align-items:center; gap:10px;">
+      <input type="file" id="fileInput" multiple accept="image/*" />
+      <button id="uploadBtn">Upload to Drive</button>
+      <button id="logoutBtn" style="background:linear-gradient(135deg,#f48fb1,#f06292)">Logout</button>
+    </div>
+
+    <div id="status" aria-live="polite" style="margin-top:10px;"></div>
   </section>
 
   <section>
@@ -44,11 +65,11 @@
   </section>
 
   <!-- Modal -->
-  <div id="modal" class="modal">
-    <span id="modalClose" class="modal-close">&times;</span>
-    <img id="modalImg" class="modal-content">
-    <div id="modalPrev" class="modal-nav">&#10094;</div>
-    <div id="modalNext" class="modal-nav">&#10095;</div>
+  <div id="modal" class="modal" aria-hidden="true">
+    <span id="modalClose" class="modal-close" role="button" aria-label="Close">&times;</span>
+    <img id="modalImg" class="modal-content" alt="Full view">
+    <div id="modalPrev" class="modal-nav" role="button" aria-label="Previous">&#10094;</div>
+    <div id="modalNext" class="modal-nav" role="button" aria-label="Next">&#10095;</div>
   </div>
 
   <script src="script.js" defer></script>
