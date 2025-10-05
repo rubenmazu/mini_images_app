@@ -233,7 +233,7 @@ body::before {
 }
 
 /* Mobile responsiveness */
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   .title-wrapper {
     flex-direction: row;
     gap: 10px;
